@@ -5,6 +5,7 @@ pipeline {
             steps {
                 // Use Maven to build the project
                 echo 'Build...'
+                sh ("cp -r /mnt/cicd-django-demo* .")
 
             }
         }
@@ -13,6 +14,7 @@ pipeline {
             steps {
                 // Run tests (customize according to your testing framework)
                 echo 'Testing...'
+                sh ("ls -al")
                 sh ("./testing.sh")
             }
         }
