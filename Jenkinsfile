@@ -1,22 +1,11 @@
 pipeline {
     agent any
-    
-    environment {
-        GIT_ALLOW_LOCAL_CHECKOUT = true
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout your source code repository
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
                 // Use Maven to build the project
                 echo 'Build...'
+
             }
         }
 
@@ -24,6 +13,7 @@ pipeline {
             steps {
                 // Run tests (customize according to your testing framework)
                 echo 'Testing...'
+                sh ("./testing.sh")
             }
         }
 
