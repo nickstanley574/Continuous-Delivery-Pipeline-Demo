@@ -5,7 +5,7 @@ pipeline {
             steps {
                 // Use Maven to build the project
                 echo 'Build...'
-                sh ("cp -r /mnt/cicd-django-demo* .")
+                sh ("cp -r /mnt/cicd-django-demo/* .")
 
             }
         }
