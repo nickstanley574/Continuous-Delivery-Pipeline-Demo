@@ -10,12 +10,15 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Static Analysis') {
             steps {
-                // Run tests (customize according to your testing framework)
-                echo 'Testing...'
-                sh ("ls -al")
-                sh ("./testing.sh")
+                sh ("./cicd2.sh flake8")
+            }
+        }
+
+        stage("Unit Tests") {
+            steps{
+                sh("./cicd2.sh unittest")
             }
         }
 
