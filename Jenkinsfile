@@ -10,9 +10,16 @@ pipeline {
             }
         }
 
-        stage('Static Analysis') {
+        stage('Style Checks') {
             steps {
-                sh ("./cicd2.sh flake8")
+                    sh "./cicd2.sh flake8"
+                }
+            }
+        }
+
+        stage("Security") {
+            steps{
+                sh("./cicd2.sh security")
             }
         }
 

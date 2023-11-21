@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "cicd-django-demo"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Flask = "^3.0.0"
+flask-sqlalchemy = "^3.1.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+flask-testing = "^0.8.1"
+coverage = "^7.3.2"
+flake8 = "^6.1.0"
+selenium = "^4.15.2"
+bandit = "^1.7.5"
+pylint = "^3.0.2"
+pip-audit = "^2.6.1"
+wily = "^1.25.0"
+pip-licenses = "^4.3.3"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | \.sh
+)/
+'''
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

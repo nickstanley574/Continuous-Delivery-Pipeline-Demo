@@ -1,0 +1,31 @@
+jenkins:
+  systemMessage: |
+    <div style="padding: 20px; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; font-weight: bold; border-radius: 5px; margin: 15px; font-size: 1.2em; text-align: center;">
+    Configured by CasC: This Jenkins installation for local development.
+    Many critical security settings have been disabled.
+    </div>
+  securityRealm:
+    local:
+      allowsSignup: false
+  # INSECURE SETTING APPLIED
+  authorizationStrategy: unsecured
+  disableRememberMe: true
+  markupFormatter:
+      rawHtml:
+        disableSyntaxHighlighting: false
+
+
+jobs:
+  - script: >
+      pipelineJob('cicd-demo') {
+        definition {
+          cpsScm {
+            scriptPath 'Jenkinsfile'
+            scm {
+              git {
+                remote { url '/mnt/cicd-django-demo' }
+              }
+            }
+          }
+        }
+      }
