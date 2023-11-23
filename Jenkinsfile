@@ -5,26 +5,28 @@ pipeline {
             steps {
                 echo 'Build...'
                 sh ("cp -r /mnt/cicd-django-demo/* .")
-                sh("./cicd2.sh build")
+                sh("docker build -t my-python-app . ")
+                sh("docker image ls")
+                sh("docker container ls")
             }
         }
 
         stage('Style Checks') {
             steps {
-                sh("./cicd2.sh flake8")
-                sh("./cicd2.sh black")
+                sh("./cicd.sh flake8")
+                sh("./cicd.sh black")
             }
         }
 
         stage("Security") {
             steps{
-                sh("./cicd2.sh security")
+                sh("./cicd.sh security")
             }
         }
 
         stage("Unit Tests") {
             steps{
-                sh("./cicd2.sh unittest")
+                sh("./cicd.sh unittest")
             }
         }
 
