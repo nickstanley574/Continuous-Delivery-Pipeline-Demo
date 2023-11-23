@@ -37,3 +37,6 @@ java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin2:admin2 reload-j
 
 
 
+# Design Philosophy
+- Nothing Local
+- Security Early

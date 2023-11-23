@@ -3,17 +3,16 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Use Maven to build the project
                 echo 'Build...'
                 sh ("cp -r /mnt/cicd-django-demo/* .")
-
+                sh("./cicd2.sh build")
             }
         }
 
         stage('Style Checks') {
             steps {
-                    sh "./cicd2.sh flake8"
-                }
+                sh("./cicd2.sh flake8")
+                sh("./cicd2.sh black")
             }
         }
 
@@ -26,6 +25,12 @@ pipeline {
         stage("Unit Tests") {
             steps{
                 sh("./cicd2.sh unittest")
+            }
+        }
+
+        stage("Selenium") {
+            steps{
+                echo "TODO"
             }
         }
 

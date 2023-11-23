@@ -1,0 +1,24 @@
+# Ignore Python bytecode files
+__pycache__
+
+# Ignore system and temporary files
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.tmp
+
+# Ignore development and test files
+*.git
+*.gitignore
+*.DS_Store
+*.env
+*.vscode/
+tests/
+__tests__/
+
+# Jenkins 
+Jenkinsfile
+jenkins-local/

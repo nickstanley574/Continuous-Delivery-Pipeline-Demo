@@ -22,6 +22,14 @@ run_flake8() {
 }
 
 
+run_black() {
+    echo ""
+    echo "Running black..."
+    poetry run black --version
+    poetry run black --check .
+}
+
+
 run_bandit() {
     echo 
     echo "=> bandit"
@@ -30,8 +38,8 @@ run_bandit() {
     # appropriate plugins against the AST nodes. Once Bandit has finished
     # scanning all the files it generates a report.
     # https://github.com/PyCQA/bandit/tree/main
-    bandit --version
-    bandit -r .
+    poetry run bandit --version
+    poetry run bandit -r .
 }
 
 run_unittest() {
@@ -81,10 +89,9 @@ run_security_tests() {
     # Bits with support from Google. This is not an official Google or Trail of
     # Bits product.
     # https://pypi.org/project/pip-audit/
+    poetry run pip-audit --version
     rm -f requirements.txt
     poetry export --without-hashes --format=requirements.txt > requirements.txt
-    # cat requirements.txt
-    poetry run pip-audit --version
     poetry run pip-audit --strict --progress-spinner off -r requirements.txt
     rm -f requirements.txt
 
@@ -94,15 +101,32 @@ run_security_tests() {
     poetry run pip-licenses   
 }
 
-poetry --version
-poetry install --no-interaction --dev
-cd app
+run_build() {
+    already_installed=false
+    if [ "$already_installed" = false ]; then
+        echo
+        poetry debug info
+        poetry install --no-interaction
+        already_installed=true
+    fi 
+}
 
+run_build
+
+
+
+cd app
 
 for cmd in "$@"; do
     case "$cmd" in
+        build)
+            run_build
+            ;;
         flake8)
             run_flake8
+            ;;
+        black)
+            run_black
             ;;
         unittest)
             run_unittest
@@ -110,17 +134,12 @@ for cmd in "$@"; do
         security)
             run_security_tests
             ;;
-        all)
-            run_flake8
-            run_unittest
-            run_security_tests
-            ;;
         help)
             print_help
             exit 0
             ;;
         *)
-            echo "Invalid option: $cmd. Available options are flake8, unittest, security, all, help."
+            echo "Invalid option: $cmd."
             exit 1
             ;;
     esac

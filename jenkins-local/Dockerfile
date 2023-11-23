@@ -7,7 +7,8 @@ RUN apt-get update && \
     apt-get install -y \
     python3 \
     python3-pip \
-    pipx 
+    vim \
+    inotify-tools
 
 RUN apt install -y python3-poetry
 
@@ -27,4 +28,6 @@ RUN jenkins-plugin-cli --plugins "blueocean:latest workflow-aggregator:latest pi
 # VOLUME /usr/share/jenkins/ref/init.groovy.d
 
 COPY jenkins.yaml /var/lib/jenkins/jenkins.yaml
+COPY seedJob.groovy /var/lib/jenkins/seedJob.groovy
+
 ENV CASC_JENKINS_CONFIG=/var/lib/jenkins/jenkins.yaml

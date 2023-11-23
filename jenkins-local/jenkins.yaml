@@ -17,7 +17,7 @@ jenkins:
 
 jobs:
   - script: >
-      pipelineJob('cicd-demo') {
+      pipelineJob('cicd-demo-committed') {
         definition {
           cpsScm {
             scriptPath 'Jenkinsfile'
@@ -29,3 +29,4 @@ jobs:
           }
         }
       }
+  - file: /mnt/cicd-django-demo/jenkins-local/seedJob.groovy
