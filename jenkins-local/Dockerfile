@@ -10,7 +10,8 @@ RUN apt-get update && \
     vim \
     inotify-tools
 
-RUN apt install -y python3-poetry
+RUN groupmod -g 136 docker
+RUN usermod -aG docker jenkins
 
 # Switch back to the Jenkins user
 USER jenkins
@@ -22,7 +23,7 @@ ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false -Dhudson.plugins.git.GitSCM
 COPY security.groovy /usr/share/jenkins/ref/init.groovy.d/
 
 # Install plugins
-RUN jenkins-plugin-cli --plugins "blueocean:latest workflow-aggregator:latest pipeline-stage-view:latest configuration-as-code:latest job-dsl:latest git:latest"
+RUN jenkins-plugin-cli --plugins "blueocean:latest workflow-aggregator:latest pipeline-stage-view:latest configuration-as-code:latest job-dsl:latest git:latest docker-plugin:latest docker-workflow:latest"
 
 # # Expose the Groovy init scripts directory as a volume
 # VOLUME /usr/share/jenkins/ref/init.groovy.d
