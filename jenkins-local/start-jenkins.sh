@@ -1,5 +1,27 @@
 #!/bin/bash
 
+set -e
+
+sudo /usr/bin/setfacl -m u:jenkins:rw- /var/run/docker.sock
+
+security_options=$(docker info --format '{{.SecurityOptions}}')
+
+if [[ $security_options != *"rootless"* ]]; then
+    if [ "$LOCAL_JENKINS_ALLOW_ROOTLESS" = "true" ]; then
+        echo
+        echo "[start-jenkins.sh] WARNING: Docker is NOT in rootless mode. Continuing"
+        echo "                   because LOCAL_JENKINS_ALLOW_ROOTLESS is true. "
+        echo
+    else
+        echo "[start-jenkins.sh] ERROR: Docker Rootless mode is not enabled. It "
+        echo "                   is recommend to run docker in rootless mode. To" 
+        echo "                   override set LOCAL_JENKINS_ALLOW_ROOTLESS=true"
+        exit 1
+    fi
+else
+    echo "[start-jenkins.sh] INFO: docker rootless mode enabled."
+fi
+
 # Run Jenkins in the background
 /usr/local/bin/jenkins.sh &
 

@@ -5,15 +5,13 @@ USER root
 
 RUN apt-get update && \
     apt-get install -y \
-    python3 \
-    python3-pip \
     vim \
-    inotify-tools
+    inotify-tools \
+    acl \
+    sudo
 
-RUN groupmod -g 136 docker
-RUN usermod -aG docker jenkins
+RUN echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/setfacl -m u\\:jenkins\\:rw- /var/run/docker.sock" >> /etc/sudoers
 
-# Switch back to the Jenkins user
 USER jenkins
 
 # Skip initial setup wizard and Allow local checkout (INSECURE SETTING APPLIED)
@@ -24,9 +22,6 @@ COPY security.groovy /usr/share/jenkins/ref/init.groovy.d/
 
 # Install plugins
 RUN jenkins-plugin-cli --plugins "blueocean:latest workflow-aggregator:latest pipeline-stage-view:latest configuration-as-code:latest job-dsl:latest git:latest docker-plugin:latest docker-workflow:latest"
-
-# # Expose the Groovy init scripts directory as a volume
-# VOLUME /usr/share/jenkins/ref/init.groovy.d
 
 COPY jenkins.yaml /var/lib/jenkins/jenkins.yaml
 COPY seedJob.groovy /var/lib/jenkins/seedJob.groovy

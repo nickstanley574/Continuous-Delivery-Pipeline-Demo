@@ -8,10 +8,9 @@ services:
     container_name: jenkins
     ports:
       - "8080:8080"
-    privileged: true
+    # privileged: true
     volumes:
       - ../.:/mnt/cicd-django-demo:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
-    # INSECURE SETTING
+      - /run/user/1000/docker.sock:/var/run/docker.sock
+      - /home/nick/bin/docker:/usr/bin/docker
     command: /mnt/cicd-django-demo/jenkins-local/start-jenkins.sh
