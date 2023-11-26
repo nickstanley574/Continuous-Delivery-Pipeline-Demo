@@ -14,7 +14,7 @@ WORKDIR /home/flask/app
 
 RUN ls -al /usr/local/bin/pip
 
-COPY --chown=flask:flask poetry.lock pyproject.toml /home/flask/app/
+COPY --chown=flask:flask poetry.lock pyproject.toml /home/flask/app/ 
 
 # Project initialization:
 RUN poetry config virtualenvs.create false \
@@ -22,7 +22,7 @@ RUN poetry config virtualenvs.create false \
 # $(test "$YOUR_ENV" == production && echo "--no-dev")
 
 
-COPY --chown=flask:flask app/ /home/flask/app/
+COPY --chown=flask:flask app/ cicd.sh /home/flask/app/ 
 
 USER flask
 
