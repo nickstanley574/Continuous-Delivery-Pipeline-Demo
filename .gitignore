@@ -27,6 +27,9 @@ env/
 # Compiled Python files
 *.pyc
 
+
+.selenium/
+
 # macOS
 .DS_Store
 

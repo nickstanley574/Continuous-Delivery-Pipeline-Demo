@@ -36,7 +36,18 @@ java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin2:admin2 reload-j
 - On Day Build Inspiration 
 
 
+# Design Decisions
+- Single Jenkins Agent
+
+- Docker-in-Docker
+
+
 
 # Design Philosophy
-- Nothing Local
+- Run Locally
+
 - Security Early
+
+- Avoid root 
+
+- Highlight Unsecure Settings and Reasoning

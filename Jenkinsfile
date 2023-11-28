@@ -1,30 +1,46 @@
 pipeline {
     agent any
+
+    options {
+        ansiColor('xterm')
+    }
+
+    environment {
+        TAG = "${env.JOB_NAME}-${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('Build') {
             steps {
                 echo 'Build...'
                 sh("cp -r /mnt/cicd-django-demo/* .")
-                sh("docker build -t cicd-demo-webapp:local-${env.BUILD_NUMBER} . ")
+                sh("docker build -t cicd-demo-webapp:${env.TAG} . ")
             }
         }
 
         stage('Style Checks') {
             steps {
-                sh("docker run -it --rm --name cicd-demo-webapp-local cicd-demo-webapp:local ./cicd.sh flake8")
-                sh("./cicd.sh black")
+                sh(
+                    label: "flake8",
+                    script: "docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh flake8"
+                )
+
+              sh(
+                    label: "black",
+                    script: "docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh black"
+                )
             }
         }
 
         stage("Security") {
             steps{
-                sh("./cicd.sh security")
+                sh("docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh security")
             }
         }
 
         stage("Unit Tests") {
             steps{
-                sh("./cicd.sh unittest")
+                sh("docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh unittest")
             }
         }
 
