@@ -45,7 +45,7 @@ run_bandit() {
 run_unittest() {
     echo
     echo "Running unittest..."
-    coverage run -m unittest test_app.py --verbose
+    PYTHONPATH=$(pwd)/app coverage run -m unittest test_app --verbose
 
     echo
     echo "Coverage Report ..."

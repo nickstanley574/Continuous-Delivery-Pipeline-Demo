@@ -1,3 +1,9 @@
+def checkForDeprecation(){
+    return True
+}
+
+
+
 pipeline {
     agent any
 
@@ -18,7 +24,7 @@ pipeline {
             }
         }
 
-        stage('Style Checks') {
+        stage('Style') {
             steps {
                 sh(
                     label: "flake8",
@@ -38,13 +44,19 @@ pipeline {
             }
         }
 
-        stage("Unit Tests") {
+        stage("Compliance") {
+            steps{
+                sh("echo TODO")
+            }
+        }
+
+        stage("Unit") {
             steps{
                 sh("docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh unittest")
             }
         }
 
-        stage("Selenium") {
+        stage("Functional") {
             steps{
                 echo "TODO"
             }
