@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        TAG = "${env.JOB_NAME}-${env.BUILD_NUMBER}"
+        TAG = "${env.JOB_NAME}-jenkins-${env.BUILD_NUMBER}"
     }
 
     stages {

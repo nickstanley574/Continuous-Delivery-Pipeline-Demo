@@ -116,10 +116,7 @@ run_security_tests() {
 run_build() {
     already_installed=false
     if [ "$already_installed" = false ]; then
-        echo
-        poetry debug info
-        poetry install --no-interaction
-        already_installed=true
+        docker build -t cicd-demo-webapp:local .
     fi 
 }
 
