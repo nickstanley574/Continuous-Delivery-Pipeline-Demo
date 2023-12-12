@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
+from os import environ
+
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
@@ -39,4 +41,7 @@ def delete(id):
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=False, host="127.0.0.1", port=5000)
+    debug = environ.get("FLASK_DEBUG", False)
+    host = environ.get("FLASK_HOST", "127.0.0.1")
+    port = environ.get("FLASK_PORT", 5000)
+    app.run(debug=debug, host=host, port=port)

@@ -51,3 +51,6 @@ java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin2:admin2 reload-j
 - Avoid root 
 
 - Highlight Unsecure Settings and Reasoning
+
+- Dependence and app should be diff images.
+

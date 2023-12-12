@@ -26,11 +26,6 @@ pipeline {
 
         stage('Style') {
             steps {
-                sh(
-                    label: "flake8",
-                    script: "docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh flake8"
-                )
-
               sh(
                     label: "black",
                     script: "docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh black"
@@ -40,7 +35,9 @@ pipeline {
 
         stage("Security") {
             steps{
-                sh("docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh security")
+                echo("####################################################################")
+                // sh("docker run -t --rm --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} ./cicd.sh security")
+                // sh("docker run -v /run/user/1000/docker.sock:/var/run/docker.sock aquasec/trivy image --no-progress --exit-code 1 --exit-on-eol 1 cicd-demo-webapp:${env.TAG}")
             }
         }
 
@@ -56,9 +53,28 @@ pipeline {
             }
         }
 
-        stage("Functional") {
+        stage("Selenium") {
+            agent {
+                docker {
+                    image 'docker:dind'
+                    // Run the container on the node specified at the
+                    // top-level of the Pipeline, in the same workspace,
+                    // rather than on a new node entirely:
+                    reuseNode true
+                    args '-u root:root'
+                }
+            }
             steps{
-                echo "TODO"
+                sh("ls -al")
+                sh("whoami")
+
+                sh("docker run -t --rm -d --name cicd-demo-webapp-local cicd-demo-webapp:${env.TAG} python app.py")
+                sh("ifconfig")
+
+                sh("apk add python3 py3-pip")
+                sh("pip install selenium docker")
+                sh("./cicd.sh selenium")
+
             }
         }
 

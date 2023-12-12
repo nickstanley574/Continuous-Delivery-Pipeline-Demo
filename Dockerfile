@@ -24,6 +24,8 @@ RUN poetry config virtualenvs.create false \
 
 COPY --chown=flask:flask app/ cicd.sh /home/flask/app/ 
 
+ENV FLASK_HOST="0.0.0.0"
+
 # USER flask
 
 # Run app.py when the container launches

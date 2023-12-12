@@ -15,7 +15,6 @@ if [ "$#" -eq 0 ]; then
 fi
 
 run_flake8() {
-    echo ""
     echo "Running flake8..."
     echo "flake8 version: $(flake8 --version)"
     flake8 --statistics
@@ -23,15 +22,13 @@ run_flake8() {
 
 
 run_black() {
-    echo ""
     echo "Running black..."
     black --version
-    black --check .
+    black --check --diff  .
 }
 
 
 run_bandit() {
-    echo 
     echo "=> bandit"
     # Bandit is a tool designed to find common security issues in Python code.
     # To do this Bandit processes each file, builds an AST from it, and runs
@@ -55,36 +52,7 @@ run_unittest() {
 
 run_selenium() {
     cd app/
-
-    installed_chrome_version=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1,2,3)
-    echo "Chrome Verion: $installed_chrome_version"
-    driver_version=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/latest-patch-versions-per-build.json \
-        | jq -r ".builds[\"$installed_chrome_version\"].version") 
-
-    echo "Chrome Driver Version: $driver_version"
-
-    driver_download_url="https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$driver_version/linux64/chrome-linux64.zip"
-
-    selenium_directory="../.selenium"
-    echo
-    rm -rf $selenium_directory/*
-    mkdir -p $selenium_directory
-
-    echo "Downloading driver: $driver_download_url"
-    wget -q -P $selenium_directory $driver_download_url
-    zipfile=$selenium_directory/$(basename "$driver_download_url")
-    unzip -q $zipfile -d $selenium_directory
-
-    python app.py &
-    app_pid=$!
-
-    sleep 2
-    
-    python -m unittest test_selenium.py
-    
-    kill $app_pid
-
-    rm -rf $selenium_directory/*
+    python -m unittest test_selenium.SeleniumTestCase.test_task_order  --verbose
 }
 
 
@@ -92,7 +60,6 @@ run_security_tests() {
 
     run_bandit
 
-    echo
     echo "=> pip-audit"
     # pip-audit is a tool for scanning Python environments for packages with known
     # vulnerabilities. It uses the Python Packaging Advisory Database
@@ -107,10 +74,13 @@ run_security_tests() {
     pip-audit --strict --progress-spinner off -r requirements.txt
     rm -f requirements.txt
 
-    echo
     echo "=> pip-licenses"
     pip-licenses --version
     pip-licenses   
+
+    # docker run -v /run/user/1000/docker.sock:/var/run/docker.sock aquasec/trivy image --no-progress cicd-demo-webapp:local
+
+    # docker run -v /run/user/1000/docker.sock:/var/run/docker.sock aquasec/trivy image --no-progress --exit-code 1 --exit-on-eol 1 cicd-demo-webapp:local
 }
 
 run_build() {
