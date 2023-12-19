@@ -4,14 +4,8 @@
 
 The goal is to write up a basic functional continuous application for a Flask application. The goal is to show the basic structure along with the key components and basic structures. The application it self will be very minimal, since the goal of this project is not to show case application but the pipeline around it. We will be using sqlite memory database and not worry about database migtions. Again the focus of this project is a cicd outline. 
 
-- Build
-- Style Checks
-- Unit Tests
-- Selenium testing
-- Coverage Tests
-- Security Scanning
+- SecurityScanning 
 - Load Testing
-- Human Review
 - Policy Check - (Code Owners)
 - Integration
 - Deploy
@@ -42,6 +36,10 @@ java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin2:admin2 reload-j
 - Docker-in-Docker
 
 
+# Benifits of approvaed_dependcies.vsv
+
+Viability - The awarnes of knowing all of the software your application uses is very good to understand. see all the software your software uses
+
 
 # Design Philosophy
 - Run Locally
@@ -54,3 +52,21 @@ java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin2:admin2 reload-j
 
 - Dependence and app should be diff images.
 
+- The best alerts are the ones before Prod.
+
+
+
+Why is_environment_ready()?
+
+When I was first developing this process at one point I noticed that my computer was starting to slow down. Running docker ps reviled I have 30+ contaiers running all from the selenium tests. This we because of a bug I had where the tearDown wasn't correctly deleting the containers. To prevent this from happening in the future I added the MAX_APP_CONTAINER value and defaulted it to 3, if more the 3 app containers where running at the same time this would indicate something isn't getting cleanup up consistently correctly. Every system and usage case is defirrent so I made this value confuvrable. I at first attempted to put a sys.exit or a raise into the tearDown to handle the original exception but TearDown ignores all exceptions (TODO Find documentation). This way if the env is in a bad state all test will abort without affecting the systems. I also added remove orphans and FORCE_GRID_RESET at this point to prevent orphan and old grids from staying arond on the host machine. 
+
+
+# How to scale? 
+- parallelization 
+
+
+# Building
+    - https://github.com/NarayanAdithya/Flask-Poetry 
+    - https://stackoverflow.com/questions/53835198/integrating-python-poetry-with-docker
+    - https://github.com/hultner-technologies/unpack-python-packages/blob/main/sandbox/pyproject.toml
+    - https://www.youtube.com/watch?v=DThFxooHEJk

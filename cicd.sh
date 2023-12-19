@@ -52,7 +52,8 @@ run_unittest() {
 
 run_selenium() {
     cd app/
-    python -m unittest test_selenium.SeleniumTestCase.test_task_order  --verbose
+    # python -m unittest test_selenium.SeleniumTestCase.test_task_order  --verbose
+    python -m unittest test_selenium.py --verbose
 }
 
 
