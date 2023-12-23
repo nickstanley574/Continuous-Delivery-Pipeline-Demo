@@ -175,7 +175,7 @@ class SeleniumTestCase(unittest.TestCase):
             app_url = f"http://localhost:{port}"
 
         else:
-            grid_url=f"http://{self.selenium_internal_ip}:4444"
+            grid_url = f"http://{self.selenium_internal_ip}:4444"
             wait_for_url(grid_url)
             options = webdriver.ChromeOptions()
             self.driver = webdriver.Remote(
