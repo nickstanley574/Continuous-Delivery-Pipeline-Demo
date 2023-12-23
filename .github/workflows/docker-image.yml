@@ -19,6 +19,7 @@ jobs:
         lscpu
         free -h
         df -h
+        whoami
     - name: Build the Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
       run: docker build --target builder -t  simple-task-app-builder:latest .
     - name: Build the Application Docker image
