@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag my-image-name:testing
     - name: see docker images
-      run: docker image ls
+      run: docker build --build-arg base_image=my-image-name:testing -f Dockerfile-clamav.dockerfile -t ${env.TAG}-temp-clamav  .
