@@ -175,9 +175,11 @@ class SeleniumTestCase(unittest.TestCase):
             app_url = f"http://localhost:{port}"
 
         else:
+            grid_url=f"http://{self.selenium_internal_ip}:4444"
+            wait_for_url(grid_url)
             options = webdriver.ChromeOptions()
             self.driver = webdriver.Remote(
-                command_executor=f"http://{self.selenium_internal_ip}:4444",
+                command_executor=grid_url,
                 options=options,
             )
             app_internal_ip = self.docker_helper.get_internal_ip(self.container)
