@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Builder Docker image
+    - name: Build the Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
       run: docker build --target builder -t  simple-task-app-builder:latest .
     - name: Build the Application Docker image
       run: docker build --target application --file Dockerfile --tag simple-task-app:latest .
