@@ -17,4 +17,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:testing
     - name: see docker images
-      run: docker build --build-arg base_image=my-image-name:testing -f Dockerfile-clamav.dockerfile -t ${env.TAG}-temp-clamav  .
+      run: docker build --build-arg base_image=my-image-name:testing -f Dockerfile-clamav.dockerfile -t my-image-name-testing-temp-clamav  .
