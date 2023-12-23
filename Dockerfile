@@ -9,29 +9,28 @@ RUN \
 
 RUN addgroup -S flask && adduser -S flask -G flask
 
-WORKDIR /opt/app/
+WORKDIR /opt/simple-task-app/
 
 
 
 FROM base as builder
 
-RUN mkdir /opt/app/database/ && chown flask:flask /opt/app/database 
+RUN mkdir /opt/simple-task-app/database/ && chown flask:flask /opt/simple-task-app/database 
 
 RUN pip install "poetry==1.4.2"
 ENV PATH="/home/flask/.local/bin:${PATH}"
 
-COPY --chown=flask:flask poetry.lock pyproject.toml /opt/app/ 
+COPY --chown=flask:flask poetry.lock pyproject.toml /opt/simple-task-app/ 
 
 RUN \
   poetry config virtualenvs.create false && \
   poetry install --no-root --no-interaction --no-ansi
 
-COPY --chown=flask:flask app/ /opt/app/ 
-COPY --chown=flask:flask tests/ /opt/tests/ 
+COPY --chown=flask:flask app/ /opt/simple-task-app/ 
 
 RUN black --check --diff .
 
-RUN coverage run -m unittest tests.test_app --verbose
+RUN coverage run -m unittest test_app --verbose
 
 RUN bandit -r -f txt .
 
@@ -39,7 +38,7 @@ RUN \
   poetry export --without-hashes --format=requirements.txt > requirements.txt && \
   pip-audit --strict --progress-spinner off -r requirements.txt
 
-COPY --chown=flask:flask licenses-check.py .approved-dep.csv  /opt/app/ 
+COPY --chown=flask:flask licenses-check.py .approved-dep.csv  /opt/simple-task-app/ 
 RUN python licenses-check.py 
 
 # Internal Pre Scan
@@ -50,7 +49,7 @@ RUN python licenses-check.py
 # Once there is a fixed everything is blocked until the fix is applied.
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 
-COPY --chown=flask:flask trivyignore-check.py .trivyignore /opt/app/ 
+COPY --chown=flask:flask trivyignore-check.py .trivyignore /opt/simple-task-app/ 
 
 RUN trivy rootfs --ignore-unfixed --exit-code 1 --timeout 3m --no-progress /
 
@@ -71,7 +70,7 @@ COPY --from=builder /wheels /wheels
 
 RUN pip install --no-cache /wheels/*
 
-COPY --from=builder /opt/app/ /opt/app/
+COPY --from=builder /opt/simple-task-app/ /opt/simple-task-app/
 
 RUN pip install -r requirements.txt
 
