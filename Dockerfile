@@ -55,6 +55,7 @@ RUN trivy rootfs --ignore-unfixed --exit-code 1 --timeout 3m --no-progress /
 
 RUN python trivyignore-check.py
 
+# Package Everything
 RUN pip wheel --wheel-dir /wheels -r requirements.txt 
 
 
