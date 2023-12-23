@@ -27,7 +27,7 @@ RUN \
   poetry install --no-root --no-interaction --no-ansi
 
 COPY --chown=flask:flask app/ /opt/app/ 
-COPY --chown=flask:flask test/ /opt/test/ 
+COPY --chown=flask:flask tests/ /opt/tests/ 
 
 RUN black --check --diff .
 
