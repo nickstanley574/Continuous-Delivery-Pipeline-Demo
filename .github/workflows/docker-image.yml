@@ -18,11 +18,11 @@ jobs:
       run: docker build --no-cache --target builder -t  simple-task-app-builder:latest .
     - name: Build the Application Docker image
       run: docker build . --file Dockerfile --tag simple-task-app:latest
-    # - name: ClamAV Scan
-    #   run: docker build --build-arg base_image=simple-task-app:latest -f Dockerfile-clamav.dockerfile -t simple-task-app-testing-temp-clamav  .
     - name: Selenium
       run: |
         python --version
         pip install selenium docker
         cd app/
         TAG=latest python -m unittest test_selenium.py --verbose
+    - name: ClamAV Scan
+      run: docker build --build-arg base_image=simple-task-app:latest -f Dockerfile-clamav.dockerfile -t simple-task-app-testing-temp-clamav  .
