@@ -14,7 +14,7 @@ app = Flask(__name__)
 is_prod_like = environ.get("PROD_LIKE", "").lower() == "true"
 
 if is_prod_like:
-    db = "sqlite:///" + path.join("/opt/app/database/", "database.db")
+    db = "sqlite:///" + path.join("/opt/simple-task-app/database/", "database.db")
 else:
     db = "sqlite:///:memory:"
 

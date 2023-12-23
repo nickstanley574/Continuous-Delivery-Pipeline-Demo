@@ -6,6 +6,8 @@ import socket
 from contextlib import closing
 import logging
 import os
+import urllib.request
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -13,6 +15,23 @@ logging.basicConfig(
     handlers=[logging.FileHandler("debug.log")],
 )
 
+
+
+def wait_for_url(url, max_try=3, sleep_duration=1):
+    for _ in range(max_try):
+        try:
+            response = urllib.request.urlopen(url)
+            if response.getcode() == 200:
+                logging.info(f"The URL {url} returns a 200 OK status.")
+                return True
+            else:
+                logging.info(f"Attempt {_ + 1}: The URL {url} returned a non-200 status code: {response.getcode()}. Retrying...")
+        except Exception as e:
+            logging.info(f"Attempt {_ + 1}: Error accessing the URL {url}: {e}. Retrying...")
+        time.sleep(sleep_duration)
+
+    logging.critical(f"Maximum number of retries ({max_try}) reached. Unable to get a 200 status code for the URL {url}.")
+    return False
 
 def find_free_port():
     """Find and return a free port on the local machine."""
@@ -144,8 +163,6 @@ class SeleniumTestCase(unittest.TestCase):
             self.image, name=container_name, detach=True, ports={8080: port}
         )
 
-        time.sleep(4)
-
         if self.local_mode:
             # if in local mode use local chrome.
             self.driver = webdriver.Chrome()
@@ -159,6 +176,8 @@ class SeleniumTestCase(unittest.TestCase):
             )
             app_internal_ip = self.docker_helper.get_internal_ip(self.container)
             app_url = f"http://{app_internal_ip}:8080"
+
+        wait_for_url(app_url)
 
         self.driver.set_window_size(1024, 768)
 
