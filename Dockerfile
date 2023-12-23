@@ -27,10 +27,11 @@ RUN \
   poetry install --no-root --no-interaction --no-ansi
 
 COPY --chown=flask:flask app/ /opt/app/ 
+COPY --chown=flask:flask test/ /opt/test/ 
 
 RUN black --check --diff .
 
-RUN coverage run -m unittest test_app --verbose
+RUN coverage run -m unittest tests.test_app --verbose
 
 RUN bandit -r -f txt .
 
