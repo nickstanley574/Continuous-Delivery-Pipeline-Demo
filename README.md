@@ -1,6 +1,10 @@
 # TinyCICD
 
+
+
 From a paranoia perspective 
+
+Everything is security is not the prevention of risk, but the mitigation of risk. Similar how you can't prove their isn't a bug in your code, you can't ensure your application or process is secure. All you can do is take steps to reasonably assume you have mitigated the risk around your application and process. 
 
 # Initial Project Description
 
