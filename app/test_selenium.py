@@ -16,7 +16,6 @@ logging.basicConfig(
 )
 
 
-
 def wait_for_url(url, max_try=3, sleep_duration=1):
     for _ in range(max_try):
         try:
@@ -25,13 +24,20 @@ def wait_for_url(url, max_try=3, sleep_duration=1):
                 logging.info(f"The URL {url} returns a 200 OK status.")
                 return True
             else:
-                logging.info(f"Attempt {_ + 1}: The URL {url} returned a non-200 status code: {response.getcode()}. Retrying...")
+                logging.info(
+                    f"Attempt {_ + 1}: The URL {url} returned a non-200 status code: {response.getcode()}. Retrying..."
+                )
         except Exception as e:
-            logging.info(f"Attempt {_ + 1}: Error accessing the URL {url}: {e}. Retrying...")
+            logging.info(
+                f"Attempt {_ + 1}: Error accessing the URL {url}: {e}. Retrying..."
+            )
         time.sleep(sleep_duration)
 
-    logging.critical(f"Maximum number of retries ({max_try}) reached. Unable to get a 200 status code for the URL {url}.")
+    logging.critical(
+        f"Maximum number of retries ({max_try}) reached. Unable to get a 200 status code for the URL {url}."
+    )
     return False
+
 
 def find_free_port():
     """Find and return a free port on the local machine."""
