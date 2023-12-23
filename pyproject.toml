@@ -1,15 +1,13 @@
 [tool.poetry]
 name = "app"
-version = "0.1.0"
+version = "0.0.0.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 Flask = "^3.0.0"
 flask-sqlalchemy = "^3.1.1"
-pip = "23.3"
 gunicorn = "^21.2.0"
 
 [tool.poetry.group.dev.dependencies]

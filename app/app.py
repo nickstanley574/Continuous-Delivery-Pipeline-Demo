@@ -1,11 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Blueprint, Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
-from os import environ
+from os import environ, path
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+# Yes I know this is not great.
+# In a real setup there would be 1 database all continaers connect to.
+# This is resulting database for a single container.
+# This purpose of this project is the cicd process itself not the
+# application or database. For simplify and demo this setups
+# alignts with the goals of this project.
+is_prod_like = environ.get("PROD_LIKE", "").lower() == "true"
+
+if is_prod_like:
+    db = "sqlite:///" + path.join("/opt/app/database/", "database.db")
+else:
+    db = "sqlite:///:memory:"
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db
 
 db = SQLAlchemy(app)
 
@@ -15,33 +29,42 @@ class Task(db.Model):
     title = db.Column(db.String(50), nullable=False)
 
 
-@app.route("/")
+with app.app_context():
+    db.create_all()
+
+tasks_bp = Blueprint("tasks", __name__)
+
+
+@tasks_bp.route("/")
 def index():
     tasks = Task.query.all()
     return render_template("index.html", tasks=tasks)
 
 
-@app.route("/add", methods=["POST"])
+@tasks_bp.route("/add", methods=["POST"])
 def add():
     title = request.form.get("title")
     new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("tasks.index"))
 
 
-@app.route("/delete/<int:id>")
+@tasks_bp.route("/delete/<int:id>")
 def delete(id):
-    task_to_delete = db.session.get(Task, id)
+    task_to_delete = Task.query.get(id)
     db.session.delete(task_to_delete)
     db.session.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("tasks.index"))
+
+
+app.register_blueprint(tasks_bp, url_prefix="/")
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     debug = environ.get("FLASK_DEBUG", False)
     host = environ.get("FLASK_HOST", "127.0.0.1")
     port = environ.get("FLASK_PORT", 5000)
     app.run(debug=debug, host=host, port=port)
+else:
+    gunicorn_app = app

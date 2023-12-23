@@ -54,6 +54,7 @@ def run(cmd):
     - subprocess.CalledProcessError: If the command exits with a non-zero status.
     """
     try:
+        logging.info(f"Running: {cmd}")
         return subprocess.run(cmd.split(), capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
@@ -95,13 +96,13 @@ def get_dependency_chain(dependency):
 def run_pip_licenses():
     """Check and compare licenses of installed Python packages with an approved list.
 
-    Reads an 'approved-dependencies.csv' file containing approved packages and their licenses.
+    Reads an '.approved-dep.csv' file containing approved packages and their licenses.
     Retrieves the current licenses of installed Python packages using 'pip-licenses'. Compares
     the current licenses with the approved licenses. Prints discrepancies and the corresponding
     dependency chains. Exits with a non-zero code if there are discrepancies.
 
     Note:
-    - The 'approved-dependencies.csv' file format should be 'package_name,license' per line.
+    - The '.approved-dep.csv' file format should be 'package_name,license' per line.
     - The 'pip-licenses' tool must be installed for the function to work.
     """
 
@@ -109,7 +110,7 @@ def run_pip_licenses():
 
     # Process CSV File for Approved Dependencies
 
-    csv_file_path = "approved-dependencies.csv"
+    csv_file_path = ".approved-dep.csv"
 
     # Using defaultdict to pip_license_cmd automatically create a list for new packages
     # Each package may have multiple licenses, which is why they are stored in a list.
@@ -139,6 +140,7 @@ def run_pip_licenses():
     extra_keys_current = current_packages.keys() - approved_packages.keys()
     for pkg in extra_keys_current:
         logging.critical(f"{pkg} is not in {csv_file_path}")
+        logging.critical(f"  └── Add to file: \"{pkg}\",\"{current_packages[pkg]}\" ")
         del current_packages[pkg]
         exit_code = 2
 

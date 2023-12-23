@@ -43,6 +43,7 @@
 "future","MIT License"
 "gitdb","BSD License"
 "greenlet","MIT License"
+"gunicorn","MIT License"
 "h11","MIT License"
 "html5lib","MIT License"
 "idna","BSD License"

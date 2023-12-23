@@ -1,1 +1,0 @@
-https://stackoverflow.com/questions/3462955/putting-git-hooks-into-a-repository

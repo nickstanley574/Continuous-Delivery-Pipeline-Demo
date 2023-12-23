@@ -1,52 +1,81 @@
-# Use an official Python runtime as a parent image
 FROM python:3.12-alpine as base
 
-# Create a non-root user and switch to it
+ENV PIP_ROOT_USER_ACTION=ignore
+
+RUN \
+  apk update && \
+  apk upgrade && \
+  pip install --upgrade pip
+
 RUN addgroup -S flask && adduser -S flask -G flask
 
-ENV PIP_ROOT_USER_ACTION=ignore
+WORKDIR /opt/app/
+
+
+
+FROM base as builder
+
+RUN mkdir /opt/app/database/ && chown flask:flask /opt/app/database 
 
 RUN pip install "poetry==1.4.2"
 ENV PATH="/home/flask/.local/bin:${PATH}"
 
-# Set the working directory to /app
-WORKDIR /home/flask/app
+COPY --chown=flask:flask poetry.lock pyproject.toml /opt/app/ 
 
-COPY --chown=flask:flask poetry.lock pyproject.toml /home/flask/app/ 
-COPY --chown=flask:flask app/ cicd.sh /home/flask/app/ 
+RUN \
+  poetry config virtualenvs.create false && \
+  poetry install --no-root --no-interaction --no-ansi
 
-RUN poetry config virtualenvs.create false \
-  && poetry install --no-interaction --no-ansi --without dev
-
-FROM base as tester
-RUN poetry install --no-interaction --no-ansi
+COPY --chown=flask:flask app/ /opt/app/ 
 
 RUN black --check --diff .
 
 RUN coverage run -m unittest test_app --verbose
 
-RUN bandit --version \
-  && bandit -r -f txt .
+RUN bandit -r -f txt .
 
-RUN pip-audit --version \
-  && poetry export --without-hashes --format=requirements.txt > requirements.txt \
-  && pip-audit --strict --progress-spinner off -r requirements.txt
+RUN \
+  poetry export --without-hashes --format=requirements.txt > requirements.txt && \
+  pip-audit --strict --progress-spinner off -r requirements.txt
 
-COPY --chown=flask:flask licenses-check.py approved-dependencies.csv /home/flask/app/ 
-
+COPY --chown=flask:flask licenses-check.py .approved-dep.csv  /opt/app/ 
 RUN python licenses-check.py 
 
+# Internal Pre Scan
 # This is scanning all dependencies including dev. We should ensure that all dependencies
 # vuaribilies are resloved and uptodate and supported.
 # Ref: https://aquasecurity.github.io/trivy/v0.48/docs/advanced/container/embed-in-dockerfile/
+# Ignore unfixed since if there is not fix we should not stop development.
+# Once there is a fixed everything is blocked until the fix is applied.
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
-RUN trivy rootfs --exit-code 1 --no-progress /
+
+COPY --chown=flask:flask trivyignore-check.py .trivyignore /opt/app/ 
+
+RUN trivy rootfs --ignore-unfixed --exit-code 1 --timeout 3m --no-progress /
+
+RUN python trivyignore-check.py
+
+RUN pip wheel --wheel-dir /wheels -r requirements.txt 
+
 
 FROM base as app
 
-ENV FLASK_HOST="0.0.0.0"
-
 USER flask
 
-# Run app.py when the container launches
-CMD ["python", "app.py"]
+ENV PATH=$PATH:/home/flask/.local/bin
+
+ENV PYTHONUNBUFFERED=1
+
+COPY --from=builder /wheels /wheels
+
+RUN pip install --no-cache /wheels/*
+
+COPY --from=builder /opt/app/ /opt/app/
+
+RUN pip install -r requirements.txt
+
+ENV PROD_LIKE TRUE
+
+ENV PORT 8080
+
+CMD ["gunicorn" , "-c", "gunicorn_config.py", "app:gunicorn_app"]

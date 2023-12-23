@@ -75,17 +75,19 @@ class SeleniumTestCase(unittest.TestCase):
         cls.local_mode = os.getenv("LOCAL", "").lower() == "true"
         tag_value = os.environ.get("TAG")
 
+        app_image = "simple-task-app"
+
         cls.docker_helper = DockerHelper()
         cls.docker_client = cls.docker_helper.client
 
-        cls.container_name_pattern = "cicd-demo-webapp-selenium-local-"
+        cls.container_name_pattern = f"{app_image}-selenium-"
 
         if tag_value is None:
             msg = "Environment variable 'TAG' is not set. Please set it before running the script.Exiting with code 2."
             logging.fatal(msg)
             raise Exception(msg)
 
-        cls.image = f"cicd-demo-webapp:{tag_value}"
+        cls.image = f"{app_image}:{tag_value}"
 
         # Check if the image exists locally
         if not cls.docker_helper.image_exists(cls.image):
@@ -139,7 +141,7 @@ class SeleniumTestCase(unittest.TestCase):
         )
 
         self.container = self.docker_client.containers.run(
-            self.image, name=container_name, detach=True, ports={5000: port}
+            self.image, name=container_name, detach=True, ports={8080: port}
         )
 
         time.sleep(4)
@@ -156,7 +158,7 @@ class SeleniumTestCase(unittest.TestCase):
                 options=options,
             )
             app_internal_ip = self.docker_helper.get_internal_ip(self.container)
-            app_url = f"http://{app_internal_ip}:5000"
+            app_url = f"http://{app_internal_ip}:8080"
 
         self.driver.set_window_size(1024, 768)
 

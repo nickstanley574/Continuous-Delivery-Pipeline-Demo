@@ -1,5 +1,7 @@
 # TinyCICD
 
+From a paranoia perspective 
+
 # Initial Project Description
 
 The goal is to write up a basic functional continuous application for a Flask application. The goal is to show the basic structure along with the key components and basic structures. The application it self will be very minimal, since the goal of this project is not to show case application but the pipeline around it. We will be using sqlite memory database and not worry about database migtions. Again the focus of this project is a cicd outline. 
@@ -70,3 +72,19 @@ When I was first developing this process at one point I noticed that my computer
     - https://stackoverflow.com/questions/53835198/integrating-python-poetry-with-docker
     - https://github.com/hultner-technologies/unpack-python-packages/blob/main/sandbox/pyproject.toml
     - https://www.youtube.com/watch?v=DThFxooHEJk
+
+
+
+I think every build should be a --no-cache build this will ensure every build get the latest values and will not hide issue later on and ensures the latest image updates, os updates (RUN apk updates) and security scan and run every time. For development builds I see the benefits which is why they can test locally and on their own runs, but for final integration build and test before deploy `--no-cache` is required.
+
+Strategy that could be used to speed up build and still keep all the above benifits
+    - multi Docker Images 
+        - Docker Application Dependency images
+        - Docker Application Image
+    - Issues 
+        - Complexly, overhead management
+    - Benefits
+        - Separation of Dependency Build times Application build times 
+        - If the Dependency Base Image is build Hourly Application builds
+
+    - I personally would only start to explore this if `--no-cache` prod builds take over 10minutes and all other avenues have been explored. 

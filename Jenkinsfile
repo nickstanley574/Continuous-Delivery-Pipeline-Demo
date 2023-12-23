@@ -19,6 +19,7 @@ pipeline {
 
     environment {
         TAG = "${env.JOB_NAME}-jenkins-${env.BUILD_NUMBER}"
+        IMAGE = "simple-task-app"
     }
 
     stages {
@@ -26,14 +27,35 @@ pipeline {
             steps {
                 echo 'Build...'
                 sh("cp -r /mnt/cicd-django-demo/* .")
-                sh("docker build --no-cache -t cicd-demo-webapp:${env.TAG} . ")
+                sh("cp -r /mnt/cicd-django-demo/.trivyignore .")
+                sh("cp -r /mnt/cicd-django-demo/.approved-dep.csv .")
+
+                // Create all dependencies test code
+                sh("docker build --no-cache --target builder -t ${IMAGE}:${env.TAG}-builder . ")
+                
+                // Final App Image
+                sh("docker build --target app -t ${IMAGE}:${env.TAG} . ")
             }
         }
+
         stage("Selenium") {
             steps{
-                sh("./cicd.sh selenium")
+                sh("""
+                cd app/
+                # python -m unittest test_selenium.SeleniumTestCase.test_task_order  --verbose
+                python -m unittest test_selenium.py --verbose
+                """)    
             }
         }
+
+        stage('ClamAV') {
+            steps {
+                sh("docker build --build-arg base_image=${IMAGE}:${env.TAG} -f Dockerfile-clamav.dockerfile -t ${env.TAG}-temp-clamav  .")
+                sh("docker build --build-arg base_image=${IMAGE}:${env.TAG}-builder -f Dockerfile-clamav.dockerfile -t ${env.TAG}-temp-clamav  .")
+            }
+        }
+
+
 
         stage('Deploy') {
             steps {
