@@ -140,7 +140,7 @@ def run_pip_licenses():
     extra_keys_current = current_packages.keys() - approved_packages.keys()
     for pkg in extra_keys_current:
         logging.critical(f"{pkg} is not in {csv_file_path}")
-        logging.critical(f"  └── Add to file: \"{pkg}\",\"{current_packages[pkg]}\" ")
+        logging.critical(f'  └── Add to file: "{pkg}","{current_packages[pkg]}" ')
         del current_packages[pkg]
         exit_code = 2
 
