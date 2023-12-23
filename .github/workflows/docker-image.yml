@@ -23,7 +23,6 @@ jobs:
         python --version
         pip install selenium docker
         cd app/
-        ls -al
         TAG=latest python -m unittest test_selenium.py --verbose
     - name: ClamAV Scan
       run: docker build --build-arg base_image=simple-task-app:latest -f Dockerfile-clamav.dockerfile -t simple-task-app-testing-temp-clamav  .
