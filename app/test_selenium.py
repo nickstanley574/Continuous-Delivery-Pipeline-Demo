@@ -9,7 +9,6 @@ import os
 import requests
 
 
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -22,15 +21,21 @@ def wait_for_url(url, max_try=3, sleep_duration=2, timeout=5):
         try:
             response = requests.get(url, timeout=timeout)
             if response.status_code == 200:
-                logging.info(f"The URL {url} returns a 200 OK status.")
+                logging.info(f"URL {url} returned a 200 OK.")
                 return True
             else:
-                logging.info(f"Attempt {_ + 1}: The URL {url} returned a non-200 status code: {response.status_code}. Retrying...")
+                logging.info(
+                    f"Attempt {_ + 1}: {url} returned a non-200 code: {response.status_code}. Retrying..."
+                )
         except requests.RequestException as e:
-            logging.info(f"Attempt {_ + 1}: Error accessing the URL {url}: {e}. Retrying...")
+            logging.info(
+                f"Attempt {_ + 1}: Error accessing the URL {url}: {e}. Retrying..."
+            )
         time.sleep(sleep_duration)
 
-    logging.critical(f"Maximum number of retries ({max_try}) reached. Unable to get a 200 status code for the URL {url}.")
+    logging.critical(
+        f"Maximum number of retries ({max_try}) reached. Unable to get a 200 status code for the URL {url}."
+    )
     return False
 
 
