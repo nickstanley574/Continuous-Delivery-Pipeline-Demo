@@ -58,7 +58,7 @@ RUN python trivyignore-check.py
 RUN pip wheel --wheel-dir /wheels -r requirements.txt 
 
 
-FROM base as app
+FROM base as application
 
 USER flask
 

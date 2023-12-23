@@ -15,9 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Builder Docker image
-      run: docker build --no-cache --target builder -t  simple-task-app-builder:latest .
+      run: docker build --target builder -t  simple-task-app-builder:latest .
     - name: Build the Application Docker image
-      run: docker build . --file Dockerfile --tag simple-task-app:latest
+      run: docker build --target application --file Dockerfile --tag simple-task-app:latest .
     - name: Selenium
       run: |
         python --version
