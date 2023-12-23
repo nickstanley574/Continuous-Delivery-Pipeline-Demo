@@ -14,7 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Build the Builder Docker image
+      run: docker build --no-cache --target builder -t  my-image-name-builder:latest .
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:testing
-    - name: see docker images
+      run: docker build . --file Dockerfile --tag my-image-name:latest
+    - name: ClamAV Scan
       run: docker build --build-arg base_image=my-image-name:testing -f Dockerfile-clamav.dockerfile -t my-image-name-testing-temp-clamav  .
