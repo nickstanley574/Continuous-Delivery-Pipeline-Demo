@@ -35,7 +35,6 @@ jobs:
     - name: Selenium
       run: |
         python --version
-        poetry --version
         pip install selenium docker
         cd app/
         TAG=latest python -m unittest test_selenium.py --verbose
