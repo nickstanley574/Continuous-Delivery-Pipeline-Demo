@@ -32,6 +32,9 @@ jobs:
     - name: Build the Application Docker image
       run: docker buildx build --target application --tag simple-task-app:latest .
 
+    - name: Docker images
+      run: docker image ls -a
+
     - name: Selenium
       run: |
         python --version
