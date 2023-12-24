@@ -25,6 +25,8 @@ jobs:
         lscpu
         free -h
         df -h
+        docker version
+        python --version
         whoami
   
     - name: Build the Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
@@ -38,7 +40,6 @@ jobs:
 
     - name: Selenium
       run: |
-        python --version
         pip install selenium docker
         cd app/
         TAG=latest python -m unittest test_selenium.py --verbose
