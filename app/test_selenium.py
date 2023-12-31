@@ -99,7 +99,7 @@ class SeleniumTestCase(unittest.TestCase):
         force_reset = os.getenv("FORCE_GRID_RESET", "").lower() == "true"
         cls.local_mode = os.getenv("LOCAL", "").lower() == "true"
 
-        cls.image = os.environ.get("IMAGE") 
+        cls.image = os.environ.get("IMAGE")
 
         app_image = cls.image.split(":")[0].replace("/", "-")
 
