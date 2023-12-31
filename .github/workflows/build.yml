@@ -30,6 +30,10 @@ jobs:
         docker version
         python --version
         whoami
+
+    - name: Set outputs
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
   
     - name: Build the Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
       run: docker buildx build --target builder -t simple-task-app-builder:latest .
@@ -38,7 +42,7 @@ jobs:
       run: |
         docker buildx build \
         --target application \
-        --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ github.sha }} \
+        --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ steps.vars.outputs.sha_short }} \
         .
 
     - name: Docker images
@@ -61,4 +65,4 @@ jobs:
         git_short_sha=$(git rev-parse --short HEAD)
         
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ github.sha }}
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ steps.vars.outputs.sha_short }
