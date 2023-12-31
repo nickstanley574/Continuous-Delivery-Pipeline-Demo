@@ -65,4 +65,4 @@ jobs:
         git_short_sha=$(git rev-parse --short HEAD)
         
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ steps.vars.outputs.sha_short }
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ steps.vars.outputs.sha_short }}
