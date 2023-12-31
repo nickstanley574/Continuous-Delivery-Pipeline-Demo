@@ -60,7 +60,7 @@ jobs:
     - name: ClamAV Scan Application Image
       run: |
         docker build \
-        --build-arg base_image=simple-task-app:latest \
+        --build-arg base_image=${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest \
         --file Dockerfile-clamav.dockerfile \
         --tag simple-task-app-testing-temp-clamav \
         .
