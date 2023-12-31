@@ -2,4 +2,5 @@
 # reason: Is for a package in trivy itself not in the application.
 # until: 2024-01-01
 CVE-2023-49568
+CVE-2023-48795
 GHSA-7ww5-4wqc-m92c
