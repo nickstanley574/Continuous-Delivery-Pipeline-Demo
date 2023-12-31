@@ -52,10 +52,10 @@ jobs:
         --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ steps.vars.outputs.sha_short }} \
         .
 
-    # - name: Selenium
-    #   run: |
-    #     cd app/
-    #     TAG=latest python -m unittest test_selenium.py --verbose
+    - name: Selenium
+      run: |
+        cd app/
+        IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest python -m unittest test_selenium.py --verbose
 
     - name: ClamAV Scan Application Image
       run: |

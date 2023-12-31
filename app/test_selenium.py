@@ -17,7 +17,7 @@ logging.basicConfig(
 
 
 def wait_for_url(url, max_try=3, sleep_duration=2, timeout=5):
-    for _ in range(max_try):
+    for i in range(max_try):
         try:
             response = requests.get(url, timeout=timeout)
             if response.status_code == 200:
@@ -25,11 +25,11 @@ def wait_for_url(url, max_try=3, sleep_duration=2, timeout=5):
                 return True
             else:
                 logging.info(
-                    f"Attempt {_ + 1}: {url} returned a non-200 code: {response.status_code}. Retrying..."
+                    f"Attempt {i + 1}: {url} returned a non-200 code: {response.status_code}. Retrying..."
                 )
         except requests.RequestException as e:
             logging.info(
-                f"Attempt {_ + 1}: Error accessing the URL {url}: {e}. Retrying..."
+                f"Attempt {i + 1}: Error accessing the URL {url}: {e}. Retrying..."
             )
         time.sleep(sleep_duration)
 
@@ -98,9 +98,12 @@ class SeleniumTestCase(unittest.TestCase):
 
         force_reset = os.getenv("FORCE_GRID_RESET", "").lower() == "true"
         cls.local_mode = os.getenv("LOCAL", "").lower() == "true"
-        tag_value = os.environ.get("TAG")
 
-        app_image = "simple-task-app"
+        cls.image = os.environ.get("IMAGE") 
+
+        app_image = cls.image.split(":")[0].replace("/", "-")
+
+        tag_value = cls.image.split(":")[-1]
 
         cls.docker_helper = DockerHelper()
         cls.docker_client = cls.docker_helper.client
@@ -111,8 +114,6 @@ class SeleniumTestCase(unittest.TestCase):
             msg = "Environment variable 'TAG' is not set. Please set it before running the script.Exiting with code 2."
             logging.fatal(msg)
             raise Exception(msg)
-
-        cls.image = f"{app_image}:{tag_value}"
 
         # Check if the image exists locally
         if not cls.docker_helper.image_exists(cls.image):
