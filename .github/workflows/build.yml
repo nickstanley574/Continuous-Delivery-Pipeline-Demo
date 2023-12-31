@@ -32,10 +32,14 @@ jobs:
         whoami
   
     - name: Build the Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
-      run: docker buildx build --target builder -t  simple-task-app-builder:latest .
+      run: docker buildx build --target builder -t simple-task-app-builder:latest .
 
     - name: Build the Application Docker image
-      run: docker buildx build --target application --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest .
+      run: |
+        docker buildx build \
+        --target application \
+        --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest --tag ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ github.sha }} \
+        .
 
     - name: Docker images
       run: docker image ls -a
@@ -55,5 +59,6 @@ jobs:
     - name: Push Docker Images
       run: |
         git_short_sha=$(git rev-parse --short HEAD)
-
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:$git_short_sha
+        
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/simple-task-app:${{ github.sha }}
