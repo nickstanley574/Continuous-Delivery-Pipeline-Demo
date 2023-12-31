@@ -80,6 +80,10 @@ jobs:
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
   
+
+    - name: Temp
+      run: "cat /tmp/docker-build-push-Seymtu/metadata-file"
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
