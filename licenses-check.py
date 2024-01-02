@@ -11,17 +11,8 @@ import sys
 import shlex
 
 # Purpose:
-# After a dependency as been approved doesn't mean it will remain approved for every. Software can change license
-# this can happen at any time but generally it happens during major version release i.e. 1.x to 2.x
-
-
-# If someone whats to add a new depeancy the workflow is this
-# 1. add the direct dependency via poetry locally: poetry add
-
-# Policy
-# 1.
-
-# why not just have a list of ok Lienses and move on .... Awareness everyone should be aware.
+# Validate all dependency are approved and makes sure the install packages have the correct expected license 
+# to make sure their hasn't been a licenses change or more dependencies for a module between versions.  
 
 import logging
 
@@ -30,7 +21,6 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     handlers=[logging.StreamHandler()],
 )
-
 
 def run(cmd):
     """Execute a command in the system shell and capture results.

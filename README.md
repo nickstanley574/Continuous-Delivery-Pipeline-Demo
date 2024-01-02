@@ -49,3 +49,5 @@ Keeping to Documentation Lives in Code - Please see [build.yaml]
 * Move the testing code to its own folder so its not in the application image. 
 * Move selenium grid management logic out of the `test_selenium.py` and into it's own file.
 * Move each step into a management script so the logic lives in the script that can be called locally vs having to look up the testing and build command from the `build.yaml` file.
+* Add githooks to do more validation before allowing for commits and pushes to repo repo.
+* add CODOWNERS to show how a process needs a review before each change.

@@ -1,30 +1,33 @@
 #!/bin/python
 
-# Trivy Ignore File
+# trivyignore-check.py
 #
 # See: https://aquasecurity.github.io/trivy/v0.22.0/vulnerability/examples/filter/
 # This file has additional format requirements to work with the trivyignore-check.py
 #
-# Every ignored must have 2 comments above it, the first  is the reason comments
-# explaining the reason it was ignored. the send is until with a date in the
-# formate YYYY-MM-DD. It recommend not to set the date more then 30 day into the future
-# if you do a WARN will be displayed. The MAX future date is 90 days into the future.
-# Each entry but have 1 space seprating it from the next one.
+# Every ignored vulnerability must have 2 comments above it. The first is the reason comment,
+# explaining the reason it was ignored. The second is until with a date in the
+# format YYYY-MM-DD.
+#
+# Note this script doesn't enfore the ignore themselves that is done by the trivy command, 
+# this is script validating before the trivy command is run that the ignores are up-to-date
+# and are still valid.
 #
 # For Example:
 #
-#   # reason No impact in our settings
+#   # reason: No impact in our settings
 #   # until: 2022-01-22
 #   CVE-2018-14618
 #
-#   # reason: Is not used in prod app is a build dependency
+#   # reason: Not used in prod app; it is a build dependency
 #   # until: 2022-03-01
-#   # CVE-1234-98765
+#   CVE-1234-98765
 
 import sys
 from itertools import groupby
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
+import argparse
 
 
 logging.basicConfig(
@@ -49,7 +52,8 @@ def split_list(original_list, split_value):
     return result
 
 
-def check_trivyignore_entries():
+def check_trivyignore_entries(max_days):
+
     logging.info(f"Checking validity of '.trivyignore'")
 
     current_datetime = datetime.now()
@@ -88,7 +92,6 @@ def check_trivyignore_entries():
         until_day = (until_datetime - current_datetime).days
         days_in_past = (current_datetime - until_datetime).days
 
-        max_days = 35
         if until_day > max_days:
             logging.critical(f"{vuls} until date should not exceed {max_days} days.")
             return False
@@ -103,8 +106,16 @@ def check_trivyignore_entries():
 
 if __name__ == "__main__":
     try:
-        if not check_trivyignore_entries():
+        parser = argparse.ArgumentParser(description="Check trivyignore entries based on the specified maximum days.")
+        parser.add_argument("--max-days", type=int, help="Maximum number of days for trivyignore entries", required=True)
+        args = parser.parse_args()
+
+        if not check_trivyignore_entries(args.max_days):
+            logging.critical("Invalid trivyignore entires found.")
             sys.exit(1)
+        else:
+            logging.info("All trivyignore entires valid.")
+
     except KeyboardInterrupt:
         logging.info("Operation interrupted by the user.")
     except Exception as e:
