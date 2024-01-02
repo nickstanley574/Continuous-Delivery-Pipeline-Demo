@@ -10,7 +10,7 @@ import csv
 import sys
 import shlex
 
-# Purpose: 
+# Purpose:
 # After a dependency as been approved doesn't mean it will remain approved for every. Software can change license
 # this can happen at any time but generally it happens during major version release i.e. 1.x to 2.x
 
@@ -50,7 +50,7 @@ def run(cmd):
         # Ignoring
         # Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
         # Severity: Low   Confidence: High
-        # This is specify script that is only used for internal checks and commands are static and are not from external 
+        # This is specify script that is only used for internal checks and commands are static and are not from external
         # or user input and is running in a place where the user already as more then enough permissions to run the script
         # passed to this method anyway.
         return subprocess.run(

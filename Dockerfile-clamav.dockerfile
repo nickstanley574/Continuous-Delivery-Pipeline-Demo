@@ -1,11 +1,11 @@
 ARG base_image
 FROM ${base_image}
 
-USER root
+# root access is needed for clamscan to have access to scan
+# all files in the container.
+USER root 
 RUN apk add clamav
 RUN freshclam
-
-# RUN ./clamscan.sh
 
 # https://askubuntu.com/questions/591964/clamav-cant-read-file-error
 # sysfs is a virtual file system provided by the Linux kernel.

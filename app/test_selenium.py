@@ -48,14 +48,23 @@ def find_free_port():
         return port
 
 
-# TODO: https://stackoverflow.com/questions/284043/outputting-data-from-unit-test-in-python
-
-
 class DockerHelper:
+    """Utility class for managing Docker containers and images."""
+
     def __init__(self) -> None:
+        """Initializes a new instance and sets up the Docker client."""
         self.client = docker.from_env()
 
     def remove_container(self, container):
+        """Removes the specified Docker container.
+
+        Args:
+            container (str or docker.models.containers.Container): Container ID or object.
+
+        Raises:
+            docker.errors.NotFound: If the specified container is not found.
+            Exception: For other unexpected errors during container removal.
+        """
         try:
             if isinstance(container, str):
                 container = self.client.containers.get(container)
@@ -68,7 +77,14 @@ class DockerHelper:
             logging.fatal(f"Docker helper Fatal Exception: {e}")
 
     def container_exists(self, container_name):
-        """Check if the container with the specified name exists"""
+        """Checks if a Docker container with the given name exists.
+
+        Args:
+            container_name (str): Name of the Docker container.
+
+        Returns:
+            bool: True if the container exists, False otherwise.
+        """
         try:
             self.client.containers.get(container_name)
             return True
@@ -76,6 +92,14 @@ class DockerHelper:
             return False
 
     def image_exists(self, image_name):
+        """Checks if a Docker image with the given name exists.
+
+        Args:
+            image_name (str): Name of the Docker image.
+
+        Returns:
+            bool: True if the image exists, False otherwise.
+        """
         try:
             self.client.images.get(image_name)
             return True
@@ -83,12 +107,17 @@ class DockerHelper:
             return False
 
     def get_internal_ip(self, container):
+        """Retrieves the internal IP address of a Docker container.
+
+        Args:
+            container (docker.models.containers.Container): Docker container object.
+
+        Returns:
+            str: Internal IP address of the container.
+        """
         return (
             container.exec_run("hostname -i").output.decode("utf-8").replace("\n", "")
         )
-
-    def is_environment_ready(self):
-        return False
 
 
 class SeleniumTestCase(unittest.TestCase):
@@ -102,7 +131,6 @@ class SeleniumTestCase(unittest.TestCase):
         cls.image = os.environ.get("IMAGE")
 
         app_image = cls.image.split(":")[0].replace("/", "-")
-
         tag_value = cls.image.split(":")[-1]
 
         cls.docker_helper = DockerHelper()
@@ -111,7 +139,7 @@ class SeleniumTestCase(unittest.TestCase):
         cls.container_name_pattern = f"{app_image}-selenium-"
 
         if tag_value is None:
-            msg = "Environment variable 'TAG' is not set. Please set it before running the script.Exiting with code 2."
+            msg = "Environment variable 'TAG' is not set. Please set it before running the script. Exiting with code 2."
             logging.fatal(msg)
             raise Exception(msg)
 
@@ -212,9 +240,9 @@ class SeleniumTestCase(unittest.TestCase):
         except Exception as e:
             logging.fatal(f"{e}")
 
-    ##############
-    # Unit Tests #
-    ##############
+    ####################
+    ## Selenium Tests ##
+    ####################
 
     def test_add_task(self):
         # Input task name and submit

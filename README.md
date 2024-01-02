@@ -16,7 +16,6 @@ The application it self will be very minimal, since the goal of this project is 
 
 The commands and scripts employed in the Continuous Delivery process should be capable of running locally in the same manner as they would in the CD process. This enables local debugging, reduces coupling between external tooling, and enhances process visibility and understanding. 
 
-
 ### Mitigation of Risk
 
 Everything in security and compliance is not the prevention of risk, but the mitigation of risk. Similar how you can't prove their isn't a bug in your code, you can't ensure a application or process is secure. All that can be done is take steps to reasonably assume you have reasonably mitigated the risk around your application and process. 
@@ -35,28 +34,18 @@ Core documentation, concepts, and reasoning should be documented within the code
 
 Keeping to Documentation Lives in Code - Please see [build.yaml]
 
+### Internal Process scrit 
+
+`trivyignore-checks.py` and `licenses-check.py` are example of what I generally call "internal process scripts". This script are independent of the application but are used for some process. Generally, I fine this script are written in the same language as the application keep the the process to a single language or some shell script, since shell script is often the glue that hold things together.  
 
 
 
-Why is_environment_ready()?
-
-When I was first developing this process at one point I noticed that my computer was starting to slow down. Running docker ps reviled I have 30+ contaiers running all from the selenium tests. This we because of a bug I had where the tearDown wasn't correctly deleting the containers. To prevent this from happening in the future I added the MAX_APP_CONTAINER value and defaulted it to 3, if more the 3 app containers where running at the same time this would indicate something isn't getting cleanup up consistently correctly. Every system and usage case is defirrent so I made this value confuvrable. I at first attempted to put a sys.exit or a raise into the tearDown to handle the original exception but TearDown ignores all exceptions (TODO Find documentation). This way if the env is in a bad state all test will abort without affecting the systems. I also added remove orphans and FORCE_GRID_RESET at this point to prevent orphan and old grids from staying arond on the host machine. 
-
-
-
-
-
-
-I think every build should be a --no-cache build this will ensure every build get the latest values and will not hide issue later on and ensures the latest image updates, os updates (RUN apk updates) and security scan and run every time. For development builds I see the benefits which is why they can test locally and on their own runs, but for final integration build and test before deploy `--no-cache` is required.
-
-Strategy that could be used to speed up build and still keep all the above benifits
-    - multi Docker Images 
-        - Docker Application Dependency images
-        - Docker Application Image
-    - Issues 
-        - Complexly, overhead management
-    - Benefits
-        - Separation of Dependency Build times Application build times 
-        - If the Dependency Base Image is build Hourly Application builds
-
-    - I personally would only start to explore this if `--no-cache` prod builds take over 10minutes and all other avenues have been explored. 
+## Todos
+* Save testing logs and reports as artifacts
+* Load Testings
+* Setup periotic security scans of the development image
+* Setup a A/B deployment demo using Heroku 
+* Setup the app and testing process with a proper database
+* Move the testing code to its own folder so its not in the application image. 
+* Move selenium grid management logic out of the `test_selenium.py` and into it's own file.
+* Move each step into a management script so the logic lives in the script that can be called locally vs having to look up the testing and build command from the `build.yaml` file.

@@ -5,14 +5,17 @@ from os import environ, path
 
 app = Flask(__name__)
 
-# Yes I know this is not great.
-# In a real setup there would be 1 database all continaers connect to.
-# This is resulting database for a single container.
-# This purpose of this project is the cicd process itself not the
-# application or database. For simplify and demo this setups
-# alignts with the goals of this project.
+# I know this is not great.
+# In a real setup there would be 1 database all containers connect to.
+# This purpose of this project is the CI/CD process itself not the
+# application or database. For simplify and demo this setups aligns
+# with the goals of this project.
 is_prod_like = environ.get("PROD_LIKE", "").lower() == "true"
 
+# When running gunicorn their code be many works for 1 container
+# when this is the case all the workers need to connect to the same
+# database.
+# TODO: Fine a better solution for this.
 if is_prod_like:
     db = "sqlite:///" + path.join("/opt/simple-task-app/database/", "database.db")
 else:

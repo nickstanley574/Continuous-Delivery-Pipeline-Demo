@@ -38,7 +38,7 @@ jobs:
       id: vars
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
   
-    - name: Build App Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
+    - name: Build App Builder Docker image (Style, Unit, Security, Compliance, Wheels)
       # All the tests and checks are built into the docker build process as part of 
       # the multi-staged build. This docker image installed all the dependencies to
       # run both the development scripts and the production application. It then 
@@ -89,6 +89,7 @@ jobs:
         .
     
     - name: Push Docker Images to Docker Hub
+      # All checks pass its time to push the image to the docker repository.
       run: |
         echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
         docker push ${{ vars.DOCKERHUB_USERNAME }}/simple-task-app:latest
