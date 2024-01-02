@@ -53,3 +53,4 @@ Keeping to Documentation Lives in Code Details for the pipeline are in [build.ym
 * Move each step into a management script so the logic lives in the script that can be called locally vs having to look up the testing and build command from the `build.yaml` file.
 * Add githooks to do more validation before allowing for commits and pushes to repo repo.
 * add CODOWNERS to show how a process needs a review before each change.
+* Prevent direct pushes to `master` and setup proper pull request workflow.
