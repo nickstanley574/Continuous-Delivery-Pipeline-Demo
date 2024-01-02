@@ -2,13 +2,15 @@
 
 Continuous Delivery demo focusing on demonstrating different steps in a Continuous Delivery Pipeline for a very basic flask application.
  
-
 ## Initial Project Objective
 
 The goal is to write up a functional continuous delivery pipeline for a Flask application. The goal is to show the structure along with the key components real world pipeline showcasing the variety of steps in the pipeline that various stockholders from within a company might want and the reasoning behind them.
 
 The application it self will be very minimal, since the goal of this project is not to show case application but the pipeline around it. We will be using sqlite database and not worry about database migrations or persistence. Again the focus of this project is a CD Pipeline outline. 
 
+## Current State 
+
+I would consider this project still in the early stages of development. There are still many improvements that need to be made.  
 
 ## Project Design Philosophy
 
@@ -32,7 +34,7 @@ Core documentation, concepts, and reasoning should be documented within the code
 
 ### Steps 
 
-Keeping to Documentation Lives in Code - Please see [build.yaml]
+Keeping to Documentation Lives in Code Details for the pipeline are in [build.yml](.github/workflows/build.yml)
 
 ### Internal Process scrit 
 
