@@ -1,5 +1,12 @@
 #!/bin/python
 
+"""
+Script Description:
+This Python script checks and compares the licenses of installed Python packages with an approved list.
+It utilizes the 'pip-licenses' tool to retrieve current licenses and compares them with the licenses listed
+in a '.approved-dep.csv' file. Discrepancies are reported, along with corresponding dependency chains.
+"""
+
 # Ignoring
 # Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
 # Severity: Low   Confidence: High
@@ -9,11 +16,6 @@ from collections import defaultdict
 import csv
 import sys
 import shlex
-
-# Purpose:
-# Validate all dependency are approved and makes sure the install packages have the correct expected license 
-# to make sure their hasn't been a licenses change or more dependencies for a module between versions.  
-
 import logging
 
 logging.basicConfig(

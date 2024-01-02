@@ -1,28 +1,30 @@
 #!/bin/python
 
-# trivyignore-check.py
-#
-# See: https://aquasecurity.github.io/trivy/v0.22.0/vulnerability/examples/filter/
-# This file has additional format requirements to work with the trivyignore-check.py
-#
-# Every ignored vulnerability must have 2 comments above it. The first is the reason comment,
-# explaining the reason it was ignored. The second is until with a date in the
-# format YYYY-MM-DD.
-#
-# Note this script doesn't enfore the ignore themselves that is done by the trivy command, 
-# this is script validating before the trivy command is run that the ignores are up-to-date
-# and are still valid.
-#
-# For Example:
-#
-#   # reason: No impact in our settings
-#   # until: 2022-01-22
-#   CVE-2018-14618
-#
-#   # reason: Not used in prod app; it is a build dependency
-#   # until: 2022-03-01
-#   CVE-1234-98765
+"""
+trivyignore-check.py
 
+See: https://aquasecurity.github.io/trivy/v0.22.0/vulnerability/examples/filter/
+This file has additional format requirements to work with the trivyignore-check.py
+
+Every ignored vulnerability must have 2 comments above it. The first is the reason comment,
+explaining the reason it was ignored. The second is until with a date in the
+format YYYY-MM-DD.
+
+Note this script doesn't enfore the ignore themselves that is done by the trivy command, 
+this is script validating before the trivy command is run that the ignores are up-to-date
+and are still valid.
+
+For Example:
+
+# reason: No impact in our settings
+# until: 2022-01-22
+CVE-2018-14618
+
+# reason: Not used in prod app; it is a build dependency
+# until: 2022-03-01
+CVE-1234-98765
+"""
+   
 import sys
 from itertools import groupby
 from datetime import datetime
