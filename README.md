@@ -1,64 +1,50 @@
 # TinyCICD
 
+This is very simple Flask app used in Continuous Delivery demo project where the focus is demonstrating different steps in a Continuous Delivery Pipeline.
+ 
+
+## Initial Project Objective
+
+The goal is to write up a functional continuous delivery pipeline for a Flask application. The goal is to show the structure along with the key components real world pipeline showcasing the variety of steps in the pipeline that various stockholders from within a company might want and the reasoning behind them.
+
+The application it self will be very minimal, since the goal of this project is not to show case application but the pipeline around it. We will be using sqlite database and not worry about database migrations or persistence. Again the focus of this project is a CD Pipeline outline. 
 
 
-From a paranoia perspective 
+## Project Design Philosophy
 
-Everything is security is not the prevention of risk, but the mitigation of risk. Similar how you can't prove their isn't a bug in your code, you can't ensure your application or process is secure. All you can do is take steps to reasonably assume you have mitigated the risk around your application and process. 
+### Run Locally
 
-# Initial Project Description
+The commands and scripts employed in the Continuous Delivery process should be capable of running locally in the same manner as they would in the CD process. This enables local debugging, reduces coupling between external tooling, and enhances process visibility and understanding. 
 
-The goal is to write up a basic functional continuous application for a Flask application. The goal is to show the basic structure along with the key components and basic structures. The application it self will be very minimal, since the goal of this project is not to show case application but the pipeline around it. We will be using sqlite memory database and not worry about database migtions. Again the focus of this project is a cicd outline. 
+### Mitigation of Risk
 
-- SecurityScanning 
-- Load Testing
-- Policy Check - (Code Owners)
-- Integration
-- Deploy
+Everything in security and compliance is not the prevention of risk, but the mitigation of risk. Similar how you can't prove their isn't a bug in your code, you can't ensure a application or process is secure. All that can be done is take steps to reasonably assume you have reasonably mitigated the risk around your application and process. 
 
-https://realpython.com/python-continuous-integration/
+### Highlight Unsecure Settings and Reasoning
 
-https://blog.inedo.com/python/pypi-package-vulnerabilities/
-https://code.likeagirl.io/performance-testing-in-python-a-step-by-step-guide-with-flask-e5a56f99513d
-https://itnext.io/how-to-detect-unwanted-licenses-in-your-python-project-c78ebdeb51df
-> Licenses can change between versions. Filelock 3.8.2 has “The Unlicense (Unlicense)” as a license, but Filelock 3.8.1 has “Public Domain (Unlicense)”. If you have to deal with a legal department they might need to reevaluate the project if a new license appears.
+The process should enforce the documentation and justification of changes, updates, and security Settings. Users must thoroughly document these exceptions and undergo additional reviews to ensure transparency and accountability in the decision-making process.
 
-- GET THE CURRENT JON CONFIG
-                sh('''
-                curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar
-                java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin:password123 get-job testing > pipeline.groovy
-                cat pipeline.groovy
-                ''')
+### Documentation Lives in the Code
 
-java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin2:admin2 reload-jcasc-configuration
+Core documentation, concepts, and reasoning should be documented within the code with the use of docstrings and comments, ensuring a single source of truth. If additional information is required in the documentation, it should be referenced to the corresponding code using links.
+
+## Continuous Delivery Overview
+
+### CI vs CD Pipeline
+
+### Tool Choices
+
+### Steps 
+
+Keeping to Documentation Lives in Code - Please see [build.yaml]
 
 
-- On Day Build Inspiration 
 
-
-# Design Decisions
-- Single Jenkins Agent
-
-- Docker-in-Docker
-
-
-# Benifits of approvaed_dependcies.vsv
+# Benefits of approvaed_dependcies.vsv
 
 Viability - The awarnes of knowing all of the software your application uses is very good to understand. see all the software your software uses
 
 
-# Design Philosophy
-- Run Locally
-
-- Security Early
-
-- Avoid root 
-
-- Highlight Unsecure Settings and Reasoning
-
-- Dependence and app should be diff images.
-
-- The best alerts are the ones before Prod.
 
 
 
@@ -67,15 +53,7 @@ Why is_environment_ready()?
 When I was first developing this process at one point I noticed that my computer was starting to slow down. Running docker ps reviled I have 30+ contaiers running all from the selenium tests. This we because of a bug I had where the tearDown wasn't correctly deleting the containers. To prevent this from happening in the future I added the MAX_APP_CONTAINER value and defaulted it to 3, if more the 3 app containers where running at the same time this would indicate something isn't getting cleanup up consistently correctly. Every system and usage case is defirrent so I made this value confuvrable. I at first attempted to put a sys.exit or a raise into the tearDown to handle the original exception but TearDown ignores all exceptions (TODO Find documentation). This way if the env is in a bad state all test will abort without affecting the systems. I also added remove orphans and FORCE_GRID_RESET at this point to prevent orphan and old grids from staying arond on the host machine. 
 
 
-# How to scale? 
-- parallelization 
 
-
-# Building
-    - https://github.com/NarayanAdithya/Flask-Poetry 
-    - https://stackoverflow.com/questions/53835198/integrating-python-poetry-with-docker
-    - https://github.com/hultner-technologies/unpack-python-packages/blob/main/sandbox/pyproject.toml
-    - https://www.youtube.com/watch?v=DThFxooHEJk
 
 
 
@@ -92,3 +70,7 @@ Strategy that could be used to speed up build and still keep all the above benif
         - If the Dependency Base Image is build Hourly Application builds
 
     - I personally would only start to explore this if `--no-cache` prod builds take over 10minutes and all other avenues have been explored. 
+
+
+
+I created a code project that containers a very simple webapp, which is not the core of the project. The core part of the project is the cicd process around the app to demonstrate a cicd process the containers unit test, selenium tests and security/compliance checks. Can you give me 5 options for what I should call this github repo project?
