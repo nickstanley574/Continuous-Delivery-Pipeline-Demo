@@ -1,25 +1,16 @@
 #!/bin/python
 
-import subprocess
+# Ignoring
+# Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+# Severity: Low   Confidence: High
+import subprocess  # nosec B404:blacklist
+
 from collections import defaultdict
 import csv
 import sys
+import shlex
 
-# This is where paranoia and legal lives.
-
-# Lawyers are like beavers: They get in the mainstream and damn it up - John Naisbitt
-# The lawyer’s truth is not Truth, but consistency or a consistent expediency. - Henry David Thoreau
-
-# There are direct dependencies and then there are dependencies for the dependencies, layers and layers
-# The question is do we trust our top level dependencies that all of its dependencies match a organization's
-# licensee requirements?
-
-# In my experience there have been time teams or loan wolf developers have developed a solution only to find out
-# their solution can't be used due to license issues. Additionally, just because something might be allowed to be
-# used locally doesn't mean it could be used in productions or in a development pipeline.
-
-# Define top level dependencies in the pyproject.toml using poetry commands
-
+# Purpose: 
 # After a dependency as been approved doesn't mean it will remain approved for every. Software can change license
 # this can happen at any time but generally it happens during major version release i.e. 1.x to 2.x
 
@@ -55,7 +46,16 @@ def run(cmd):
     """
     try:
         logging.info(f"Running: {cmd}")
-        return subprocess.run(cmd.split(), capture_output=True, text=True, check=True)
+        args = shlex.split(cmd)
+        # Ignoring
+        # Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+        # Severity: Low   Confidence: High
+        # This is specify script that is only used for internal checks and commands are static and are not from external 
+        # or user input and is running in a place where the user already as more then enough permissions to run the script
+        # passed to this method anyway.
+        return subprocess.run(
+            args, capture_output=True, text=True, check=True
+        )  # nosec B603
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
         print(f"Command output: {e.output}")

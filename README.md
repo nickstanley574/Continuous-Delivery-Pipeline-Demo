@@ -1,6 +1,6 @@
-# TinyCICD
+# Continuous Delivery Pipeline Demo
 
-This is very simple Flask app used in Continuous Delivery demo project where the focus is demonstrating different steps in a Continuous Delivery Pipeline.
+Continuous Delivery demo focusing on demonstrating different steps in a Continuous Delivery Pipeline for a very basic flask application.
  
 
 ## Initial Project Objective
@@ -16,6 +16,7 @@ The application it self will be very minimal, since the goal of this project is 
 
 The commands and scripts employed in the Continuous Delivery process should be capable of running locally in the same manner as they would in the CD process. This enables local debugging, reduces coupling between external tooling, and enhances process visibility and understanding. 
 
+
 ### Mitigation of Risk
 
 Everything in security and compliance is not the prevention of risk, but the mitigation of risk. Similar how you can't prove their isn't a bug in your code, you can't ensure a application or process is secure. All that can be done is take steps to reasonably assume you have reasonably mitigated the risk around your application and process. 
@@ -30,20 +31,9 @@ Core documentation, concepts, and reasoning should be documented within the code
 
 ## Continuous Delivery Overview
 
-### CI vs CD Pipeline
-
-### Tool Choices
-
 ### Steps 
 
 Keeping to Documentation Lives in Code - Please see [build.yaml]
-
-
-
-# Benefits of approvaed_dependcies.vsv
-
-Viability - The awarnes of knowing all of the software your application uses is very good to understand. see all the software your software uses
-
 
 
 
@@ -70,7 +60,3 @@ Strategy that could be used to speed up build and still keep all the above benif
         - If the Dependency Base Image is build Hourly Application builds
 
     - I personally would only start to explore this if `--no-cache` prod builds take over 10minutes and all other avenues have been explored. 
-
-
-
-I created a code project that containers a very simple webapp, which is not the core of the project. The core part of the project is the cicd process around the app to demonstrate a cicd process the containers unit test, selenium tests and security/compliance checks. Can you give me 5 options for what I should call this github repo project?

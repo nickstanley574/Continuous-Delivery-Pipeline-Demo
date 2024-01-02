@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "master" ]
   schedule:
-    - cron: '0 14 * * *'  # This schedule runs every day at 9 AM Chicago time (14:00 UTC)
+    - cron: '0 14 * * *'  # runs every day at 9AM Chicago time (14:00 UTC)
 
 
 concurrency:
@@ -22,6 +22,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: "Display runs-on Details and Install Build Dependencies"
+      # It is useful for viability and debugging purposes to see
+      # the details of the github runner env.
       run: |
         set -x
         lscpu
@@ -37,6 +39,10 @@ jobs:
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
   
     - name: Build App Builder Docker image (Unit Tests, Security Checks, Compliance, Wheels)
+      # All the tests and checks are built into the docker build process as part of 
+      # the multi-staged build. This docker image installed all the dependencies to
+      # run both the development scripts and the production application. It then 
+      # creates a python wheel containing only the prod dependencies. 
       run: |
         docker buildx build \
         --target builder \
@@ -44,6 +50,9 @@ jobs:
         .
 
     - name: Build the Application Docker image
+      # Copies the prod wheel to the application image. This ensures the application 
+      # image is the minium needed to run and doesn't contain the development 
+      # dependencies. 
       run: |
         docker buildx build \
         --target application \
@@ -52,11 +61,25 @@ jobs:
         .
 
     - name: Selenium
+      # After the code as been unit testing, validating the cod is compliant and the
+      # application built it not time to test the functionally the code via Selenium
+      # testing. This is the first time in  the testing process that the built
+      # application is run and the live instance tested. 
       run: |
         cd app/
         IMAGE=${{ vars.DOCKERHUB_USERNAME }}/simple-task-app:latest python -m unittest test_selenium.py --verbose
-
+    
     - name: ClamAV Scan Application Image
+      # This is added to show a pipline step that slows downs the process, increase
+      # the complexity for step many may find unnecessary, but it is there because
+      # of other requirements.
+      # 
+      # As mentioned in the context of security and compliance, the focus is on risk
+      # mitigation. One risk is vulnerabilities, another risk that needs to be mitigated
+      # is liability. There are cases where, either due to a contract,, compliance or
+      # another checkbox, an item in the process might need to be added, even though in
+      # others' minds, it adds little value for the cost and time to implement and
+      # support. (That said, I kind of like the idea of ClamAV scanning images.)
       run: |
         docker build \
         --build-arg base_image=${{ vars.DOCKERHUB_USERNAME }}/simple-task-app:latest \
@@ -65,10 +88,8 @@ jobs:
         --tag clamav-${{ steps.vars.outputs.sha_short }} \
         .
     
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
-
-    - name: Push Docker Images
+    - name: Push Docker Images to Docker Hub
       run: |
+        echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ vars.DOCKERHUB_USERNAME }}" --password-stdin
         docker push ${{ vars.DOCKERHUB_USERNAME }}/simple-task-app:latest
         docker push ${{ vars.DOCKERHUB_USERNAME }}/simple-task-app:${{ steps.vars.outputs.sha_short }}
