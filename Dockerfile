@@ -53,7 +53,7 @@ COPY --chown=flask:flask trivyignore-check.py .trivyignore /opt/simple-task-app/
 
 RUN trivy rootfs --ignore-unfixed --exit-code 1 --timeout 3m --no-progress /
 
-RUN python trivyignore-check.py
+RUN python trivyignore-check.py --max-days 30
 
 # Package Everything
 RUN pip wheel --wheel-dir /wheels -r requirements.txt 

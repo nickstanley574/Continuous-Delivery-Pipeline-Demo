@@ -36,7 +36,7 @@ Core documentation, concepts, and reasoning should be documented within the code
 
 Keeping to Documentation Lives in Code Details for the pipeline are in [build.yml](.github/workflows/build.yml)
 
-### Internal Process scrit 
+### Internal Process script  
 
 `trivyignore-checks.py` and `licenses-check.py` are example of what I generally call "internal process scripts". This script are independent of the application but are used for some process. Generally, I fine this script are written in the same language as the application keep the the process to a single language or some shell script, since shell script is often the glue that hold things together.  
 
