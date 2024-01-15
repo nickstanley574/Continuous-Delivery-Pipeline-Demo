@@ -3,9 +3,7 @@ name = "Basic Tasks"
 version = "0.0.0.0"
 description = "Very simple Flask app used form a Continuous Delivery Demo Project."
 authors = ["Nick Stanley <40447503+nickstanley574@users.noreply.github.com>"]
-
-[project.urls]
-homepage = "https://github.com/nickstanley574/Continuous-Delivery-Pipeline-Demo"
+repository = "https://github.com/nickstanley574/Continuous-Delivery-Pipeline-Demo"
 
 [tool.poetry.dependencies]
 python = "^3.10"
